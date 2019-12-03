@@ -14,37 +14,34 @@ def part1(inp):
         x = y = 0
         seen = set()
         for ins in wire:
-            direction, dist = ins[0], ins[1:]
-            dist = int(dist)
+            direction, dist = ins[0], int(ins[1:])
             dx, dy = dirs[direction]
             for _ in range(dist):
                 x += dx
                 y += dy
                 seen.add((x,y))
         seens.append(seen)
-    intersects = seens[0].intersection(seens[1])
+    intersects = seens[0] & seens[1]
 
     return min(abs(x)+abs(y) for (x,y) in intersects)
 
 def part2(inp):
     seens = []
-    dirs = {'R': (0,1), 'L': (0, -1), 'U':(-1,0), 'D':(1,0)}
+    dirs = {'R': (0,1), 'L': (0,-1), 'U':(-1,0), 'D':(1,0)}
     for wire in inp:
         x = y = 0
         seen = {}
         steps = 0
         for ins in wire:
-            direction, dist = ins[0], ins[1:]
-            dist = int(dist)
+            direction, dist = ins[0], int(ins[1:])
             dx, dy = dirs[direction]
             for _ in range(dist):
                 steps += 1
                 x += dx
                 y += dy
-                if (x,y) not in seen:
-                    seen[(x,y)] = steps
+                seen[(x,y)] = seen.get((x,y), steps)
         seens.append(seen)
-    intersects = set(seens[0].keys()).intersection(set(seens[1].keys()))
+    intersects = seens[0].keys() & seens[1].keys()
 
     return min(abs(x)+abs(y) for (x,y) in intersects), min(seens[0][k] + seens[1][k] for k in intersects)
 
