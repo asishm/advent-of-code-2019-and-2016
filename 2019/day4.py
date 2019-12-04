@@ -6,35 +6,15 @@ import string
 def parse(inp):
     return [int(k) for k in inp.strip().split('-')]
 
-def part1(inp):
-    count = 0
-    a = max(100000, inp[0])
-    b = min(999999, inp[1])
-    for val in range(a, b + 1):
-        strval = str(val)
-        if list(strval) == sorted(strval) and any(k > 1 for k in collections.Counter(strval).values()): 
-            # second condition works without itertools.groupby because
-            # first condition would be false in a case like 112211 so we can just use a Counter
-            # otherwise the check would be any(len(list(grp)) > 1 for k,grp in itertools.groupby(strval))
-            count += 1
-    return count
+def part1(a,b):
+    return sum(list(n) == sorted(n) and len(set(n)) < len(n) for n in map(str, range(max(100000, a), min(999999, b)+1)))
 
-def part2(inp):
-    count = 0
-    a = max(100000, inp[0])
-    b = min(999999, inp[1])
-    for val in range(a, b + 1):
-        strval = str(val)
-        if list(strval) == sorted(strval) and any(k == 2 for k in collections.Counter(strval).values()): 
-            # second condition works without itertools.groupby because
-            # first condition would be false in a case like 112211 so we can just use a Counter
-            # otherwise the check would be any(len(list(grp)) == 2 for k,grp in itertools.groupby(strval))
-            count += 1
-    return count
+def part2(a,b):
+    return sum(list(n) == sorted(n) and 2 in collections.Counter(n).values() for n in map(str, range(max(100000, a), min(999999, b)+1)))
 
 if __name__ == "__main__":
     import sys
     inp = parse(sys.stdin.read())
-    print(part1(inp.copy()))
-    print(part2(inp.copy()))
+    print(part1(*inp.copy()))
+    print(part2(*inp.copy()))
 
