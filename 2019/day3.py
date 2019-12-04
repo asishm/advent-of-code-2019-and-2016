@@ -45,7 +45,6 @@ def part2(inp):
 
     return min(abs(x)+abs(y) for (x,y) in intersects), min(seens[0][k] + seens[1][k] for k in intersects)
 
-
 if __name__ == "__main__":
     import sys
     inp = parse(sys.stdin.read())
