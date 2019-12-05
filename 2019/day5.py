@@ -29,7 +29,7 @@ def part1(inp, init=1):
             inp[a1] = init
             i += 2
         elif opcode == 4:
-            print('OUTPUT', inp[a1])
+            print('OUTPUT', val1)
             i += 2
 
 def part2(inp, init=5):
@@ -45,7 +45,10 @@ def part2(inp, init=5):
 
         a1, a2, a3 = inp[i+1:i+4]
         val1 = inp[a1] if c == '0' else a1
-        val2 = inp[a2] if b == '0' else a2
+        try:
+            val2 = inp[a2] if b == '0' else a2
+        except IndexError:
+            assert opcode in (3,4)
 
         if opcode == 1:
             inp[a3] = val1 + val2
