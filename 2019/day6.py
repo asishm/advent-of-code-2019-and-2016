@@ -4,21 +4,6 @@ import re
 import string
 import networkx as nx
 
-class Node:
-    def __init__(self, val):
-        self.val = val
-        self.left = None
-        self.right = None
-    
-    def __eq__(self, other):
-        if isinstance(other, Node):
-            return self.val == other.val
-        else:
-            return self.val == other
-
-    def __hash__(self):
-        return hash(self.val)
-
 def parse(inp):
     return list(k.split(')') for k in inp.splitlines() if k.strip())
 
