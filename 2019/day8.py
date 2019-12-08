@@ -11,9 +11,29 @@ def part1(inp, *args, **kwargs):
     min_layer = min(layers, key=lambda x: x[0])
     return min_layer[1] * min_layer[2]
 
-def part2(inp, *args, **kwargs):
+letters = {
+  'A' : [[0,1,1,1,1,1],[1,0,0,1,0,0],[1,0,0,1,0,0],[0,1,1,1,1,1],[0,0,0,0,0,0]],
+  'B' : [[1,1,1,1,1,1],[1,0,1,0,0,1],[1,0,1,0,0,1],[0,1,0,1,1,0],[0,0,0,0,0,0]],
+  'C' : [[0,1,1,1,1,0],[1,0,0,0,0,1],[1,0,0,0,0,1],[0,1,0,0,1,0],[0,0,0,0,0,0]],
+  'E' : [[1,1,1,1,1,1],[1,0,1,0,0,1],[1,0,1,0,0,1],[1,0,0,0,0,1],[0,0,0,0,0,0]],
+  'F' : [[1,1,1,1,1,1],[1,0,1,0,0,0],[1,0,1,0,0,0],[1,0,0,0,0,0],[0,0,0,0,0,0]],
+  'G' : [[0,1,1,1,1,0],[1,0,0,0,0,1],[1,0,0,1,0,1],[0,1,0,1,1,1],[0,0,0,0,0,0]],
+  'H' : [[1,1,1,1,1,1],[0,0,1,0,0,0],[0,0,1,0,0,0],[1,1,1,1,1,1],[0,0,0,0,0,0]],
+  'J' : [[0,0,0,0,1,0],[0,0,0,0,0,1],[1,0,0,0,0,1],[1,1,1,1,1,0],[0,0,0,0,0,0]],
+  'K' : [[1,1,1,1,1,1],[0,0,1,0,0,0],[0,1,0,1,1,0],[1,0,0,0,0,1],[0,0,0,0,0,0]],
+  'L' : [[1,1,1,1,1,1],[0,0,0,0,0,1],[0,0,0,0,0,1],[0,0,0,0,0,1],[0,0,0,0,0,0]],
+  'P' : [[1,1,1,1,1,1],[1,0,0,1,0,0],[1,0,0,1,0,0],[0,1,1,0,0,0],[0,0,0,0,0,0]],
+  'R' : [[1,1,1,1,1,1],[1,0,0,1,0,0],[1,0,0,1,1,0],[0,1,1,0,0,1],[0,0,0,0,0,0]],
+  'U' : [[1,1,1,1,1,0],[0,0,0,0,0,1],[0,0,0,0,0,1],[1,1,1,1,1,0],[0,0,0,0,0,0]],
+  'Y' : [[1,1,0,0,0,0],[0,0,1,0,0,0],[0,0,0,1,1,1],[0,0,1,0,0,0],[1,1,0,0,0,0]],
+  'Z' : [[1,0,0,0,1,1],[1,0,0,1,0,1],[1,0,1,0,0,1],[1,1,0,0,0,1],[0,0,0,0,0,0]],
+}
+
+def part2_oneline(inp, *args, **kwargs):
     ## ugly one-liner
-    # return '\n'.join(''.join(next('\u2588' if val == 1 else ' ' for val in inp[i*25+j:len(inp):25*6] if val !=2) for j in range(25)) for i in range(6))
+    return '\n'.join(''.join(next('\u2588' if val == 1 else ' ' for val in inp[i*25+j:len(inp):25*6] if val !=2) for j in range(25)) for i in range(6))
+
+def part2_ocr(inp, *args, **kwargs):
     grid = [[inp[i*25+j:len(inp):25*6] for j in range(25)] for i in range(6)]
     out = []
     width = 50
@@ -39,9 +59,26 @@ def part2(inp, *args, **kwargs):
     proc = sp.Popen("tesseract day8.png stdout -l eng --oem 0 --psm 6", stdout=sp.PIPE, stderr=sp.PIPE)
     out, err = proc.communicate()
 
-    os.unlink("day8.png")
+def part2_letter(inp, *args, **kwargs):
+    grid = [[inp[i*25+j:len(inp):25*6] for j in range(25)] for i in range(6)]
+    out = [[] for _ in range(5)]
+    for row in grid:
+        tmp = []
+        for i, vals in enumerate(row):
+            val = next(val for val in vals if val != 2)
+            tmp.append(val)
+            if (i + 1) % 5 == 0:
+                out[i // 5].append(tmp)
+                tmp = []
+    out_str = []
+    for letter in out:
+        letter = [list(k) for k in zip(*letter)]
+        # print(letter)
+        for k,v in letters.items():
+            if letter == v:
+                out_str.append(k)
 
-    return out.decode().strip()
+    return ''.join(out_str)
 
 if __name__ == "__main__":
     import sys
