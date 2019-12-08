@@ -1,37 +1,24 @@
-import itertools
-import collections
-import re
-import string
-import networkx as nx
-import numpy as np
-import pandas as pd
+from collections import Counter
 
 def parse(inp):
     return [int(k) for k in inp.strip()]
 
 def part1(inp, *args, **kwargs):
-    X, Y = 25,6
-    grid = pd.DataFrame(np.array(inp).reshape((-1,X*Y))).T
-    layer = grid.apply(lambda x: x.eq(0).sum()).sort_values().index[0]
-    return grid[layer].eq(1).sum() * grid[layer].eq(2).sum()
+    layers = {idx:Counter(inp[i:i+25*6]) for idx,i in enumerate(range(0, len(inp), 25*6))}
+    min_layer = min(layers, key=lambda x: layers[x][0])
+    return layers[min_layer][1] * layers[min_layer][2]
 
 def part2(inp, *args, **kwargs):
-    X, Y = 25,6
-    grid = np.array(inp).reshape((-1,Y,X))
-    out = [[None]*25 for _ in range(6)]
-
-    grid = grid
-    for layer in grid:
-        for i, row in enumerate(layer):
-            for j, val in enumerate(row):
-                v = out[i][j]
-                if v is None:
-                    if val == 0:
-                        out[i][j] = '   '
-                    elif val == 1:
-                        out[i][j] = '■■ '
-
-    return '\n'.join(''.join(row) for row in out)
+    ## ugly one-liner
+    ## return '\n'.join([''.join([next('■■ ' if val == 1 else '   ' for val in inp[i*25+j:len(inp):25*6] if val !=2) for j in range(25)]) for i in range(6)])
+    grid = [[inp[i*25+j:len(inp):25*6] for j in range(25)] for i in range(6)]
+    out = []
+    for row in grid:
+        tmp = []
+        for vals in row:
+            tmp.append(next('■■ ' if val == 1 else '   ' for val in vals if val !=2))
+        out.append(''.join(tmp))
+    return '\n'.join(out)
 
 if __name__ == "__main__":
     import sys
