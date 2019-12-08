@@ -10,6 +10,7 @@ def parse(inp):
 def part1(inp, *args, **kwargs):
     
     max_thrust = float('-inf')
+    # out_phase = None
     for phase_list in itertools.permutations([0,1,2,3,4], 5):
         init = 0
         for amp_idx in range(5):
@@ -25,16 +26,20 @@ def part1(inp, *args, **kwargs):
                     break
         if init >= max_thrust:
             max_thrust = max(max_thrust, init)
+            # out_phase = phase_list
 
     return max_thrust
 
 def part2(inp, *args, **kwargs):
     max_thrust = float('-inf')
+    # out_phase = None
     for phase_list in itertools.permutations([5,6,7,8,9],5):
         amps = [compute(inp.copy(), phase) for phase in phase_list]
         [next(amp) for amp in amps]
         init = [0]
+        # steps = []
         for amp_idx in itertools.cycle(range(5)):
+            # steps.append(amp_idx)
             # amp, cp = amps[amp_idx]
             amp = amps[amp_idx]
             # print(instructions)
@@ -43,7 +48,10 @@ def part2(inp, *args, **kwargs):
             try:
                 val2 = amp.send(val)
             except StopIteration:
-                break
+                if amp_idx == 4:
+                    break
+                else:
+                    continue
                 # print(f"PHASE: {phase} AMP: {amp_idx} == STOPITERATION")
             # print(f"PHASE: {phase} AMP: {amp_idx} == RECEIVED {val2} INP: {cp}")
             if val2 is not None:
@@ -51,8 +59,8 @@ def part2(inp, *args, **kwargs):
             # print(init, phase_list[amp])
         if init[-1] >= max_thrust:
             max_thrust = max(max_thrust, init[-1])
+            # out_phase = phase_list
             # print(max_thrust, phase)
-
     return max_thrust
 
 def compute(inp, phase=0):
@@ -88,8 +96,7 @@ def compute(inp, phase=0):
                 inp[a1] = phase
                 inp_count += 1
             else:
-                k = yield
-                inp[a1] = k
+                inp[a1] = yield
             i += 2
         elif opcode == 4:
             yield val1 
