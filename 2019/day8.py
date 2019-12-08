@@ -4,9 +4,9 @@ def parse(inp):
     return [int(k) for k in inp.strip()]
 
 def part1(inp, *args, **kwargs):
-    layers = {idx:Counter(inp[i:i+25*6]) for idx,i in enumerate(range(0, len(inp), 25*6))}
-    min_layer = min(layers, key=lambda x: layers[x][0])
-    return layers[min_layer][1] * layers[min_layer][2]
+    layers = [Counter(inp[i:i+25*6]) for idx,i in enumerate(range(0, len(inp), 25*6))]
+    min_layer = min(layers, key=lambda x: x[0])
+    return min_layer[1] * min_layer[2]
 
 def part2(inp, *args, **kwargs):
     ## ugly one-liner
