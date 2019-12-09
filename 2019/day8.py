@@ -59,6 +59,8 @@ def part2_ocr(inp, *args, **kwargs):
     proc = sp.Popen("tesseract day8.png stdout -l eng --oem 0 --psm 6", stdout=sp.PIPE, stderr=sp.PIPE)
     out, err = proc.communicate()
 
+    return out.decode().strip()
+
 def part2_letter(inp, *args, **kwargs):
     grid = [[inp[i*25+j:len(inp):25*6] for j in range(25)] for i in range(6)]
     out = [[] for _ in range(5)]
@@ -85,4 +87,6 @@ if __name__ == "__main__":
     inp = parse(sys.stdin.read())
     print(part1(inp.copy()))
     print("=========")
-    print(part2(inp.copy()))
+    print(part2_letter(inp.copy()))
+    print(part2_ocr(inp.copy()))
+    print(part2_oneline(inp.copy()))
